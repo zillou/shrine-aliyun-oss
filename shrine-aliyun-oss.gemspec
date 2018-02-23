@@ -6,10 +6,7 @@ Gem::Specification.new do |spec|
 
   spec.summary       = "Provides Aliyun OSS storage for Shrine."
   spec.homepage      = "https://github.com/zillou/shrine-aliyun-oss"
-
-  spec.files         = `git ls-files -z`.split("\x0").reject do |f|
-    f.match(%r{^(test|spec|features)/})
-  end
+  spec.files         = Dir["README.md", "LICENSE", "lib/**/*.rb", "shrine-aliyun-oss.gemspec"]
 
   spec.require_paths = ["lib"]
   spec.license       = "MIT"
