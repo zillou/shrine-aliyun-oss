@@ -13,10 +13,12 @@ class Shrine
       end
 
       def upload(io, id, shrine_metadata: {}, **upload_options)
+        content_type = shrine_metadata["mime_type"]
+
         if copyable?(io)
           bucket.copy_object(io.storage.object_key(io.id), object_key(id))
         else
-          bucket.put_object(object_key(id)) { |stream| stream << io.read }
+          bucket.put_object(object_key(id), content_type: content_type) { |stream| stream << io.read }
         end
       end
 
@@ -27,7 +29,7 @@ class Shrine
       # Downloads the file from Aliyun OSS, and returns a `Tempfile`.
       def download(id)
         tempfile = Tempfile.new(["shrine-aliyun-oss", File.extname(id)], binmode: true)
-        object = bucket.get_object(id, file: tempfile)
+        object = bucket.get_object(object_key(id), file: tempfile)
 
         tempfile.singleton_class.instance_eval { attr_accessor :content_type }
         tempfile.content_type = object.headers[:content_type]
