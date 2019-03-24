@@ -39,18 +39,23 @@ class Shrine
         raise
       end
 
-      def open(id)
-        chunks = nil
-        object = bucket.get_object(object_key(id)) do |chunk|
-          chunks = Enumerator.new do |y|
-            y << chunk
+      # Returns a `Down::ChunkedIO` object that downloads S3 object content
+      # on-demand. By default, read content will be cached onto disk so that
+      # it can be rewinded, but if you don't need that you can pass
+      # `rewindable: false`.
+      def open(id, rewindable: true)
+        object = bucket.get_object(object_key(id))
+        chunks = Enumerator.new do |y|
+          bucket.get_object(object_key(id)) do
+            |chunk| y << chunk
           end
         end
 
         Down::ChunkedIO.new(
           chunks: chunks,
+          rewindable: rewindable,
           size:   object.size,
-          data:   { object: object }
+          data: { object: object }
         )
       end
 
