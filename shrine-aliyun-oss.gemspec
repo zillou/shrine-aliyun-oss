@@ -11,7 +11,7 @@ Gem::Specification.new do |spec|
   spec.require_paths = ["lib"]
   spec.license       = "MIT"
 
-  spec.add_dependency "shrine", "~> 2.2"
+  spec.add_dependency "shrine", ">= 2.2", "< 4.0"
   spec.add_dependency "aliyun-sdk", "~> 0.7"
 
   spec.add_development_dependency "bundler", "~> 1.16"
